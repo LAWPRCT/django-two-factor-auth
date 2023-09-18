@@ -81,7 +81,7 @@ class Twilio:
             send_kwargs['from_'] = getattr(settings, 'TWILIO_CALLER_ID')
 
         message = self.client.messages.create(**send_kwargs)
-        logger.info("SMS sent with sid %s and status", message.sid, message.status)
+        logger.info("SMS sent with sid %s and %s status", message.sid, message.status)
 
 
 def validate_voice_locale(locale):
