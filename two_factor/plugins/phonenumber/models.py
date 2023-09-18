@@ -98,7 +98,7 @@ class PhoneDevice(ThrottlingMixin, Device):
         if self.method == 'call':
             make_call(device=self, token=token)
         else:
-            logger.info("Sending SMS in PhoneDevice.generate_challenge")
+            logger.info("Sending SMS in PhoneDevice.generate_challenge", stack_info=True)
             send_sms(device=self, token=token)
 
     def get_throttle_factor(self):
