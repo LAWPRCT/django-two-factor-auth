@@ -333,6 +333,7 @@ class LoginView(RedirectURLMixin, IdempotentSessionWizardView):
         if self.steps.current == self.TOKEN_STEP:
             form_with_errors = form and form.is_bound and not form.is_valid()
             if not form_with_errors:
+                logger.info("Calling generate_challenge in LoginView.render")
                 self.get_device().generate_challenge()
         return super().render(form, **kwargs)
 
@@ -521,6 +522,7 @@ class SetupView(RedirectURLMixin, IdempotentSessionWizardView):
         next_step = self.steps.next
         if next_step == 'validation':
             try:
+                logger.debug("Calling generate_challenge in SetupView.render_next_step")
                 self.get_device().generate_challenge()
                 kwargs["challenge_succeeded"] = True
             except Exception:

@@ -1,3 +1,4 @@
+import logging
 from django.conf import settings
 from django.shortcuts import redirect, resolve_url
 from django.views.decorators.cache import never_cache
@@ -13,6 +14,9 @@ from two_factor.views.utils import (
 from .forms import PhoneNumberMethodForm
 from .models import PhoneDevice
 from .utils import get_available_phone_methods
+
+logger = logging.getLogger(__name__)
+
 
 
 @class_view_decorator(never_cache)
@@ -55,6 +59,7 @@ class PhoneSetupView(IdempotentSessionWizardView):
         """
         next_step = self.steps.next
         if next_step == 'validation':
+            logger.info("Calling generate_challenge in PhoneSetupView.render_next_step")
             self.get_device().generate_challenge()
         return super().render_next_step(form, **kwargs)
 

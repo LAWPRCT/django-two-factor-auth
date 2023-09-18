@@ -1,4 +1,5 @@
 from binascii import unhexlify
+import logging
 
 from django.conf import settings
 from django.db import models
@@ -14,6 +15,8 @@ PHONE_METHODS = (
     ('call', _('Phone Call')),
     ('sms', _('Text Message')),
 )
+
+logger = logging.getLogger(__name__)
 
 
 def key_validator(*args, **kwargs):
@@ -95,6 +98,7 @@ class PhoneDevice(ThrottlingMixin, Device):
         if self.method == 'call':
             make_call(device=self, token=token)
         else:
+            logger.info("Sending SMS in PhoneDevice.generate_challenge")
             send_sms(device=self, token=token)
 
     def get_throttle_factor(self):

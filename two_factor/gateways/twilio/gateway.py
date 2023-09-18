@@ -1,5 +1,5 @@
 from urllib.parse import urlencode
-
+import logging
 from django.conf import settings
 from django.template.loader import render_to_string
 from django.urls import reverse
@@ -15,6 +15,9 @@ VOICE_LANGUAGES = ('en', 'en-gb', 'es', 'fr', 'it', 'de', 'da-DK', 'de-DE',
                    'es-ES', 'es-MX', 'fi-FI', 'fr-CA', 'fr-FR', 'it-IT',
                    'ja-JP', 'ko-KR', 'nb-NO', 'nl-NL', 'pl-PL', 'pt-BR',
                    'pt-PT', 'ru-RU', 'sv-SE', 'zh-CN', 'zh-HK', 'zh-TW')
+
+
+logger = logging.getLogger(__name__)
 
 
 class Twilio:
@@ -62,6 +65,7 @@ class Twilio:
         """
         send sms using template 'two_factor/twilio/sms_message.html'
         """
+        logger.info("Sending SMS in send_sms for Twilio")
         body = render_to_string(
             'two_factor/twilio/sms_message.html',
             {'token': token}
@@ -76,7 +80,8 @@ class Twilio:
         else:
             send_kwargs['from_'] = getattr(settings, 'TWILIO_CALLER_ID')
 
-        self.client.messages.create(**send_kwargs)
+        message = self.client.messages.create(**send_kwargs)
+        logger.info("SMS sent with sid %s and status", message.sid, message.status)
 
 
 def validate_voice_locale(locale):
